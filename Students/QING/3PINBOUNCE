@@ -1,0 +1,37 @@
+#include <Adafruit_NeoPixel.h>
+
+#define  PIN   5
+#define  NUMPIXELS 24
+
+Adafruit_NeoPixel pixRing(NUMPIXELS, PIN, NEO_GRB + NEO_KHZ800);
+
+int pixAddress = 2;
+int follower1 = 1;
+int follower2 = 0;
+int increment = 1;
+
+void setup() {
+  pixRing.begin();
+  pixRing.setBrightness(63);
+  pixRing.show();
+}
+
+
+void loop() {
+  pixRing.clear();
+  pixRing.setPixelColor(pixAddress, 255, 255, 255);
+  pixRing.setPixelColor(follower1, 255, 255, 255);
+  pixRing.setPixelColor(follower2, 255, 255, 255);
+  pixRing.setPixelColor(0, 0, 255, 63);
+  pixRing.show();
+  delay(100);
+
+  if (pixAddress == 23) {
+    increment = -1;
+  } else if (pixAddress == 2) {
+    increment = 1;
+  }
+  pixAddress = pixAddress + increment;
+  follower1 = follower1 + increment;
+  follower2 = follower2 + increment;
+}
