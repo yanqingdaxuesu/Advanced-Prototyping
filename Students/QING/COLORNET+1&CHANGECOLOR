@@ -1,0 +1,82 @@
+#include <Adafruit_NeoPixel.h>
+
+#define  PIN   5
+#define  NUMPIXELS 24
+
+
+#define button1 A5
+
+Adafruit_NeoPixel pixRing(NUMPIXELS, PIN, NEO_GRB + NEO_KHZ800);
+
+int pixAddress = 0;
+
+boolean oldState = HIGH;
+int     mode     = 0;    // Currently-active animation mode, 0-9
+
+
+void setup() {
+  pinMode(button1, INPUT);
+  pixRing.begin();
+  pixRing.setBrightness(63);
+  pixRing.show();
+}
+
+
+void loop() {
+  // Get current button state.
+  boolean newState = digitalRead(button1);
+
+  // Check if state changed from high to low (button press).
+  if ((newState == LOW) && (oldState == HIGH)) {
+    // Short delay to debounce button.
+    delay(20);//? when it is 10 , 1 press light up 2 lights sometimes
+
+    // Check if button is still low after debounce.
+    newState = digitalRead(button1);
+
+    if (newState == LOW) {     // Yes, still low
+      if (++mode > 4) mode = 0; // Advance to next mode, wrap around after #4
+      switch (mode) {          // Start the new animation...
+        case 0:
+          //set pixRing white
+          pixRing.setPixelColor(pixAddress, 255, 255, 255);
+          pixRing.setPixelColor(0, 255, 255, 255);
+          pixRing.show();
+
+          pixAddress = pixAddress + 1;
+          break;
+
+
+        case 1:
+          pixRing.setPixelColor(pixAddress, 255, 0, 0);
+          pixRing.setPixelColor(0, 255, 0, 0);
+          pixRing.show();
+
+          pixAddress = pixAddress + 1;
+          break;
+
+
+        case 2:
+          //set pixRing yellow
+          pixRing.setPixelColor(pixAddress, 255, 255, 0);
+          pixRing.setPixelColor(0, 255, 255, 0);
+          pixRing.show();
+
+          pixAddress = pixAddress + 1;
+          break;
+
+
+        case 3:
+          pixRing.setPixelColor(pixAddress, 13, 152, 186);
+          pixRing.setPixelColor(0, 13, 152, 186);
+          pixRing.show();
+
+          pixAddress = pixAddress + 1;
+          break;
+      }
+    }
+  }
+
+  // Set the last-read button state to the old state.
+  oldState = newState;
+}
